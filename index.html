@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Farmacia</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
     <style>
-        /* Fuente más limpia estilo Apple/Google */
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        /* Ocultar scrollbar pero permitir scroll */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -28,47 +29,83 @@
 
     <main class="max-w-7xl mx-auto px-4 pt-6 space-y-6">
 
-        <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 sticky top-20 z-40 transition-all">
-            
-            <div class="relative mb-4">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-                <input type="text" id="buscador" 
-                    class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm" 
-                    placeholder="Buscar por nombre, código o descripción...">
-            </div>
+        <div class="flex justify-center space-x-4 mb-6">
+            <button id="tab-inventario" class="px-6 py-2 rounded-full font-bold text-sm transition-all bg-blue-600 text-white shadow-lg shadow-blue-500/30 cursor-default">
+                📦 Inventario
+            </button>
+            <button id="tab-ventas" class="px-6 py-2 rounded-full font-bold text-sm transition-all bg-white text-slate-500 hover:bg-slate-100 cursor-pointer">
+                💰 Ventas
+            </button>
+        </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div class="relative">
-                    <select id="filtro-categoria" class="appearance-none w-full bg-slate-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500 text-sm font-medium cursor-pointer">
-                        <option value="">📂 Todas las Categorías</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+        <div id="vista-inventario" class="space-y-6">
+            <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 sticky top-20 z-40 transition-all">
+                <div class="relative mb-4">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <input type="text" id="buscador" 
+                        class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm" 
+                        placeholder="Buscar por nombre, código o descripción...">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="relative">
+                        <select id="filtro-categoria" class="appearance-none w-full bg-slate-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500 text-sm font-medium cursor-pointer">
+                            <option value="">📂 Todas las Categorías</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <select id="filtro-estado" class="appearance-none w-full bg-slate-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500 text-sm font-medium cursor-pointer">
+                            <option value="">📋 Todos los productos</option>
+                            <option value="agotarse" class="text-red-600 font-bold">⚠ Stock Bajo (Critico)</option>
+                            <option value="caducar">📅 Próximos a caducar</option>
+                            <option value="vendidos">🔥 Más vendidos</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="relative">
-                    <select id="filtro-estado" class="appearance-none w-full bg-slate-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500 text-sm font-medium cursor-pointer">
-                        <option value="">📋 Todos los productos</option>
-                        <option value="agotarse" class="text-red-600 font-bold">⚠ Stock Bajo (Critico)</option>
-                        <option value="caducar">📅 Próximos a caducar</option>
-                        <option value="vendidos">🔥 Más vendidos</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                    </div>
+            <div id="grid-inventario" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
+                <div id="loading-stock" class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400">
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mb-4"></div>
+                    <p>Cargando inventario...</p>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <div id="grid-inventario" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
-            <div id="loading-stock" class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400">
-                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mb-4"></div>
-                <p>Cargando inventario...</p>
+        <div id="vista-ventas" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-6 text-white shadow-lg">
+                <h2 class="text-xs font-medium opacity-90 uppercase tracking-wide">Ventas Recientes</h2>
+                <p id="total-ventas-dinero" class="text-3xl font-bold mt-2">$0.00</p>
+                <p id="total-items-vendidos" class="text-sm opacity-80 mt-1">Calculando...</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50 text-slate-800 uppercase text-xs font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="px-6 py-4">Fecha / Ticket</th>
+                                <th class="px-6 py-4">Detalle Compra</th>
+                                <th class="px-6 py-4 text-center">Items</th>
+                                <th class="px-6 py-4 text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-ventas-body" class="divide-y divide-slate-100">
+                            </tbody>
+                    </table>
+                </div>
+                <div id="vacio-ventas" class="p-8 text-center text-gray-400 hidden">No hay registros recientes.</div>
             </div>
         </div>
 
@@ -76,5 +113,4 @@
 
     <script src="app.js"></script>
 </body>
-
 </html>
