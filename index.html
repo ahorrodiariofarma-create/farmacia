@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <style>
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
@@ -20,7 +22,7 @@
     <nav class="bg-slate-900/95 backdrop-blur text-white sticky top-0 z-50 border-b border-slate-700 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div>
-                <h1 class="font-bold text-lg tracking-tight">Farmacia<span class="text-blue-400">Control</span></h1>
+                <h1 class="font-bold text-lg tracking-tight">Farmacia<span class="text-blue-400">Ahorro Diario</span></h1>
                 <p class="text-[10px] text-slate-400 uppercase tracking-widest">Inventario en vivo</p>
             </div>
             <div id="status-indicator" class="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse"></div>
@@ -35,6 +37,9 @@
             </button>
             <button id="tab-ventas" class="px-6 py-2 rounded-full font-bold text-sm transition-all bg-white text-slate-500 hover:bg-slate-100 cursor-pointer">
                 💰 Ventas
+            </button>
+            <button id="tab-compras" class="px-6 py-2 rounded-full font-bold text-sm transition-all bg-white text-slate-500 hover:bg-slate-100 cursor-pointer">
+                🛒 Lista de Compras
             </button>
         </div>
 
@@ -90,6 +95,17 @@
                 <p id="total-items-vendidos" class="text-sm opacity-80 mt-1">Calculando...</p>
             </div>
 
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 h-80 relative flex flex-col">
+                <div class="flex justify-end space-x-2 mb-2">
+                    <button onclick="cambiarPeriodo('semana')" class="px-3 py-1 text-xs font-bold bg-slate-100 hover:bg-blue-100 text-slate-600 hover:text-blue-600 rounded transition">Semana</button>
+                    <button onclick="cambiarPeriodo('mes')" class="px-3 py-1 text-xs font-bold bg-slate-100 hover:bg-blue-100 text-slate-600 hover:text-blue-600 rounded transition">Mes</button>
+                    <button onclick="cambiarPeriodo('anio')" class="px-3 py-1 text-xs font-bold bg-slate-100 hover:bg-blue-100 text-slate-600 hover:text-blue-600 rounded transition">Año</button>
+                </div>
+                <div class="flex-grow relative">
+                     <canvas id="graficaVentas"></canvas>
+                </div>
+            </div>
+
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-600">
@@ -102,12 +118,40 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-ventas-body" class="divide-y divide-slate-100">
-                            </tbody>
+                        </tbody>
                     </table>
                 </div>
                 <div id="vacio-ventas" class="p-8 text-center text-gray-400 hidden">No hay registros recientes.</div>
             </div>
         </div>
+
+        <div id="vista-compras" class="hidden space-y-6">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold text-slate-700">🛒 Lista de Compras (Nube)</h2>
+            <button onclick="cargarListaCompras()" class="text-sm text-blue-600 hover:underline">🔄 Actualizar</button>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-600">
+                <thead class="bg-slate-50 text-slate-800 uppercase text-xs font-bold border-b border-slate-200">
+                    <tr>
+                        <th class="px-4 py-3">Tipo</th>
+                        <th class="px-4 py-3">Producto</th>
+                        <th class="px-4 py-3 text-center">Stock Actual</th>
+                        <th class="px-4 py-3 text-center">Sugerido</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-compras-body" class="divide-y divide-slate-100">
+                    </tbody>
+            </table>
+        </div>
+        <div id="vacio-compras" class="hidden p-8 text-center text-slate-400">
+            ✅ No hay items pendientes en la lista.
+        </div>
+    </div>
+</div>
+
 
     </main>
 
