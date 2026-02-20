@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogo de Laboratorios Clinicos</title>
+    <link rel="stylesheet" href="estilos-lab.css">
+</head>
+<body>
+    <button id="btnAbrirCarrito">🛒 Ver Pedido</button>
+
+    <header class="lab-hero">
+        <div class="hero-content">
+            <h1>Laboratorios Clinicos</h1>
+            <p>Analisis precisos y confiables</p>
+        </div>
+    </header>
+
+    <main id="mainContainer">
+        <div class="contenedorBusqueda">
+            <input type="text" id="buscador" placeholder="Buscar estudio...">
+        </div>
+
+        <section class="carrusel-contenedor">
+            <button id="btnAnterior" class="carrusel-btn">&#10094;</button>
+            <div id="carruselKits" class="carrusel-pista">
+                </div>
+            <button id="btnSiguiente" class="carrusel-btn">&#10095;</button>
+        </section>
+
+        <section id="lab-grid" class="grid-container">
+            </section>
+    </main>
+
+    <div id="carritoFlotante" class="carrito-oculta">
+    <div class="carrito-cabecera">
+        <h2>Tu Pedido</h2>
+        <button id="btnCerrarCarrito">X</button>
+    </div>
+    <ul id="listaArticulos"></ul>
+    <button id="botonWhatsapp">Pedir por WhatsApp</button>
+</div>
+
+    <script src="script-lab.js"></script>
+</body>
+</html>
